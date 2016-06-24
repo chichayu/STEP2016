@@ -90,23 +90,27 @@ public class PageRank {
 			for (int k = 0; k < node.length; k++) {
 				GoogleMatrix[i][k] = 0;
 			}
-			int num = 0;
+			double num = 0;
 			for (int l = 0; l < edge.length; l++) {
 				if (edge[l].getFrom_id() == i) {
 					// from_idの値がiであるedge[]の要素の数をカウントする
 					num = num + 1;
 				}
 			}
+			if (num == 0) {
+				GoogleMatrix[i][i] = 1;
+			}
 			for (int j = 0; j < edge.length; j++) {
 				if (edge[j].getFrom_id() == i) {
 					int to_id = edge[j].getTo_id();
-					GoogleMatrix[i][to_id] = 1 / num;
-				}
+					GoogleMatrix[i][to_id] += 1.0 / num;
+				} 
 			}
-			for (int m = 0; m < node.length; m++) {
+		/*	for (int m = 0; m < node.length; m++) {
 				System.out.println("GoogleMatrix[" + i + "][" + m + "]は"
 						+ GoogleMatrix[i][m]);
 			}
+		*/
 		}
 		return GoogleMatrix;
 	}
@@ -116,7 +120,7 @@ public class PageRank {
 		double[] PageRank = new double[n];
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				PageRank[i] += nodes[i] * matrix[j][i];
+				PageRank[i] += nodes[j] * matrix[j][i];
 			}
 		}
 		return PageRank;
@@ -133,8 +137,7 @@ public class PageRank {
 		double[][] GoogleMatrix = makeGoogleMatrix(node, edge);
 
 		System.out.println("何回試行しますか。");
-		BufferedReader br2 = new BufferedReader(
-				new InputStreamReader(System.in));
+		BufferedReader br2 = new BufferedReader(new InputStreamReader(System.in));
 		int times = Integer.parseInt(br2.readLine());
 		for (int i = 0; i < times; i++) {
 			PageRank = calculate(PageRank, GoogleMatrix);
